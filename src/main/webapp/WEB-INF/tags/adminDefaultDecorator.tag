@@ -118,7 +118,7 @@
 						<b class="arrow"></b>
 					</li>
 					<li class="">
-						<a href="${contextPath}/admin/reports">
+						<a href="${contextPath}/admin/reports?dt_type=cwk">
 							<i class="menu-icon fa fa-file"></i>
 							<span class="menu-text">Reports </span>
 						</a>

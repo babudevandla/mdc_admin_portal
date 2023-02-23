@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,12 +39,12 @@ public class PaymentDaoImpl implements PaymentDao{
 	public List<Payments> getAllTransactionsBasedOnSearch(TransactionSearchDto tnxSearch) throws ParseException {
 		logger.info("getting payments list based" );
 		List<Payments> payments = null;
-		
+		StringBuilder sbQuery= new StringBuilder("from Payments");
 		SimpleDateFormat  df = new SimpleDateFormat("yyyy-MM-dd");
-		if(tnxSearch.getPayerName()!=null) {
-			StringBuilder sbQuery= new StringBuilder("from Payments");
-			StringBuilder whereQuery = getPaymentsBasedOnSearch(tnxSearch);
-			sbQuery.append(whereQuery);
+		if(StringUtils.isNotBlank(tnxSearch.getPayerName())) {
+			
+			String whereQuery = getPaymentsBasedOnSearch(tnxSearch);
+			sbQuery.append(" WHERE ").append(whereQuery);
 			
 			logger.info("Final Query ===> : {}",sbQuery.toString());
 			
@@ -66,22 +67,44 @@ public class PaymentDaoImpl implements PaymentDao{
 			}
 			
 		}else {
-			payments=(List<Payments>) sessionFactory.getCurrentSession().createQuery("from Payments ORDER BY payId DESC").list();
+			String whereQuery = getPaymentsBasedOnSearch(tnxSearch);
+			sbQuery.append(" WHERE ").append(whereQuery);
+			logger.info("Final Query ===> : {}",sbQuery.toString());
+			if(whereQuery.length() > 0){
+				 Date d1 = df.parse(tnxSearch.getFromDate());
+				 Date d2 = df.parse(tnxSearch.getToDate());
+				 java.sql.Date  fromDate = new java.sql.Date(d1.getTime());
+				 java.sql.Date  toDate= new java.sql.Date(d2.getTime());
+				 logger.info("fromDate ===> : {}",fromDate);
+				 logger.info("toDate ===> : {}",toDate);
+				payments=(List<Payments>) sessionFactory.getCurrentSession().createQuery(sbQuery.toString())
+						 .setParameter("fromDate", fromDate)
+						.setParameter("toDate", toDate).list();
+			}else {
+				payments=(List<Payments>) sessionFactory.getCurrentSession().createQuery(sbQuery.toString()).list();
+			}
+			
 		}
 		return payments;
 	}
 	
-	private StringBuilder getPaymentsBasedOnSearch(TransactionSearchDto payment) {
-		StringBuilder whereCondition = new StringBuilder();
-		if(payment.getPayerName()!=null) {
-			whereCondition.append(" where payerName=:payerName ");
+	private String getPaymentsBasedOnSearch(TransactionSearchDto payment) {
+		String whereClause = "";
+		if(StringUtils.isNotBlank(payment.getPayerName())) {
+			 if(whereClause.length() > 0){
+			        whereClause += " AND ";
+			    }
+			 whereClause+=" payerName=:payerName ";
 		}
-		if(payment.getFromDate()!=null && payment.getToDate()!=null) {
-			whereCondition.append(" AND createddate BETWEEN :fromDate AND :toDate");
+		if(StringUtils.isNotBlank(payment.getFromDate()) && StringUtils.isNotBlank(payment.getToDate())) {
+			if(whereClause.length() > 0){
+		        whereClause += " AND ";
+		    }
+		 whereClause+=" createddate BETWEEN :fromDate AND :toDate ";
 		}
-		whereCondition.append(" ORDER BY payId DESC");
-		logger.info("Where Condition : {}",whereCondition.toString());
-		return whereCondition;
+		whereClause+=" ORDER BY payId DESC";
+		logger.info("Where Condition : {}",whereClause.toString());
+		return whereClause;
 	}
 
 	@Override
