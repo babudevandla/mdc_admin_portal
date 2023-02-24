@@ -39,35 +39,35 @@ public class HibernateConfiguration {
  
 	@Value("${entitymanager.packagesToScan}")
 	private String PACKAGES_TO_SCAN;
- 
-	@Bean
-	public DataSource dataSource() {
-		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setDriverClassName(DRIVER);
-		dataSource.setUrl(URL);
-		dataSource.setUsername(USERNAME);
-		dataSource.setPassword(PASSWORD);
-		return dataSource;
-	}
- 
-	@Bean
-	public LocalSessionFactoryBean sessionFactory() {
-		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-		sessionFactory.setDataSource(dataSource());
-		sessionFactory.setPackagesToScan(PACKAGES_TO_SCAN);
-		Properties hibernateProperties = new Properties();
-		hibernateProperties.put("hibernate.dialect", DIALECT);
-		hibernateProperties.put("hibernate.show_sql", SHOW_SQL);
-		hibernateProperties.put("hibernate.hbm2ddl.auto", HBM2DDL_AUTO);
-		sessionFactory.setHibernateProperties(hibernateProperties);
- 
-		return sessionFactory;
-	}
- 
-	@Bean
-	public HibernateTransactionManager transactionManager() {
-		HibernateTransactionManager transactionManager = new HibernateTransactionManager();
-		transactionManager.setSessionFactory(sessionFactory().getObject());
-		return transactionManager;
-	}	
+
+    @Bean
+    DataSource dataSource() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName(DRIVER);
+        dataSource.setUrl(URL);
+        dataSource.setUsername(USERNAME);
+        dataSource.setPassword(PASSWORD);
+        return dataSource;
+    }
+
+    @Bean
+    LocalSessionFactoryBean sessionFactory() {
+        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+        sessionFactory.setDataSource(dataSource());
+        sessionFactory.setPackagesToScan(PACKAGES_TO_SCAN);
+        Properties hibernateProperties = new Properties();
+        hibernateProperties.put("hibernate.dialect", DIALECT);
+        hibernateProperties.put("hibernate.show_sql", SHOW_SQL);
+        hibernateProperties.put("hibernate.hbm2ddl.auto", HBM2DDL_AUTO);
+        sessionFactory.setHibernateProperties(hibernateProperties);
+
+        return sessionFactory;
+    }
+
+    @Bean
+    HibernateTransactionManager transactionManager() {
+        HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+        transactionManager.setSessionFactory(sessionFactory().getObject());
+        return transactionManager;
+    }	
 }

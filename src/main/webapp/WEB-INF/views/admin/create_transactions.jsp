@@ -94,7 +94,20 @@
 											</div>
 										</div>
 									</div>
+									<div class="form-group">
 									
+									
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-phone">Payment Date</label>
+
+									<div class="col-sm-5">
+										<div class="input-group">
+											<input class="form-control date-picker" id="datepicker" type="text" name="paymentDate"  data-date-format="dd-mm-yyyy" />
+											<span class="input-group-addon">
+												<i class="fa fa-calendar bigger-110"></i>
+											</span>
+										</div>
+									</div>
+								</div>
 									<div class="form-group">
 										<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">Created By <span style="color: red;">*</span>:</label>
 
@@ -190,5 +203,20 @@
 	  </div>
 	</div>
 </div>
+
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+  <script>
+  $( function() {
+    $( "#datepicker" ).datepicker({
+      changeMonth: true,
+      changeYear: true,
+      dateFormat: 'dd-mm-yy' 
+    });
+  } );
+  </script>
 </jsp:body>
 </defaultTemplate:adminDefaultDecorator>
