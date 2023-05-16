@@ -42,7 +42,7 @@ public class Payments {
 
 	@Column(name = "updateddate")
 	private Date updateddate;
-	
+	//payment dates
 	@Column(name = "paymentDate")
 	private String paymentDate;
 
